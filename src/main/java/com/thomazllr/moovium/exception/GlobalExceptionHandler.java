@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(AlreadyExistMovieException.class)
-    public ResponseEntity<Problem> handleAlreadyExistMovieException(AlreadyExistMovieException exception) {
+    @ExceptionHandler(AlreadyExistEntityException.class)
+    public ResponseEntity<Problem> handleAlreadyExistEntityException(AlreadyExistEntityException exception) {
 
         var badRequest = HttpStatus.BAD_REQUEST;
 
-        var problem =  Problem.builder()
+        var problem = Problem.builder()
                 .status(badRequest.value())
                 .message(exception.getReason())
                 .timestamp(LocalDateTime.now())
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
 
         var badRequest = HttpStatus.NOT_FOUND;
 
-        var problem =  Problem.builder()
+        var problem = Problem.builder()
                 .status(badRequest.value())
                 .message(exception.getReason())
                 .timestamp(LocalDateTime.now())

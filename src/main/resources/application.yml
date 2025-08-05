@@ -11,3 +11,6 @@ spring:
     password: ${ENV_PASSWORD}
   flyway:
     clean-disabled: false
+  threads:
+    virtual:
+      enabled: true

@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${ENV_USERNAME}
+      POSTGRES_PASSWORD: ${ENV_PASSWORD}
+      POSTGRES_DB: moovium
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:

@@ -1,0 +1,13 @@
+spring:
+  config:
+    import: optional:classpath:.env[.properties]
+  application:
+    name: moovium
+  main:
+    banner-mode: off
+  datasource:
+    url: ${ENV_URL_DATABASE}
+    username: ${ENV_USERNAME}
+    password: ${ENV_PASSWORD}
+  flyway:
+    clean-disabled: false

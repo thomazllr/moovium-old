@@ -5,6 +5,7 @@ import com.thomazllr.moovium.exception.NotFoundException;
 import com.thomazllr.moovium.model.Movie;
 import com.thomazllr.moovium.repository.MovieRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ import static com.thomazllr.moovium.repository.specs.MovieSpecs.isFeatured;
 import static com.thomazllr.moovium.repository.specs.MovieSpecs.titleContains;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MovieService {
 
     private final MovieRepository repository;
@@ -32,9 +33,7 @@ public class MovieService {
             specs = specs.and(titleContains(title));
         }
 
-        if (featured != null) {
-            specs = specs.and(isFeatured(featured));
-        }
+        specs = specs.and(isFeatured(featured));
 
         return repository.findAll(specs);
 

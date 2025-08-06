@@ -1,5 +1,6 @@
 package com.thomazllr.moovium.service;
 
+import com.thomazllr.moovium.exception.AlreadyExistMovieException;
 import com.thomazllr.moovium.exception.NotFoundException;
 import com.thomazllr.moovium.model.Movie;
 import com.thomazllr.moovium.repository.MovieRepository;
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -132,7 +132,7 @@ class MovieServiceTest {
 
     @Test
     @DisplayName("Get an empty list movie with filter returns an empty list")
-    @Order(7)
+    @Order(8)
     void getEmptyListMovie_WithValidParams_ReturnsEmptyList() {
 
         when(repository.findAll(ArgumentMatchers.<Specification<Movie>>any())).thenReturn(Collections.emptyList());
@@ -147,7 +147,7 @@ class MovieServiceTest {
 
     @Test
     @DisplayName("Delete a movie by existing id dont throws exception")
-    @Order(8)
+    @Order(9)
     void deleteMovie_ByExistingTitle_DontThrowsException() {
 
         when(repository.findById(1L)).thenReturn(Optional.of(MOVIE));
@@ -158,11 +158,54 @@ class MovieServiceTest {
 
     @Test
     @DisplayName("Delete a movie by unexisting id throws NotFoundException")
-    @Order(9)
+    @Order(10)
     void deleteMovie_ByUnexistingId_ThrowsNotFoundException() {
         assertThatThrownBy(() -> service.delete(99L)).isInstanceOf(NotFoundException.class);
 
     }
+
+    @Test
+    @DisplayName("Update a movie with new valid data does not throw exception")
+    @Order(11)
+    void updateMovie_WithValidData_DoesNotThrowException() {
+
+        Movie updatedMovie = Movie.builder()
+                .id(MOVIE.getId())
+                .title("The Matrix Reloaded")
+                .synopsis(MOVIE.getSynopsis())
+                .genre(MOVIE.getGenre())
+                .duration(MOVIE.getDuration())
+                .releaseDate(MOVIE.getReleaseDate())
+                .ageRating(MOVIE.getAgeRating())
+                .posterUrl(MOVIE.getPosterUrl())
+                .status(MOVIE.getStatus())
+                .featured(MOVIE.getFeatured())
+                .featuredUntil(MOVIE.getFeaturedUntil())
+                .build();
+
+        when(repository.findByTitleIgnoreCase(updatedMovie.getTitle())).thenReturn(Optional.empty());
+        when(repository.save(updatedMovie)).thenReturn(updatedMovie);
+
+        assertThatCode(() -> service.update(updatedMovie)).doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("Update a movie with duplicate title throws AlreadyExistMovieException")
+    @Order(12)
+    void updateMovie_WithDuplicateTitle_ThrowsException() {
+
+        Movie duplicate = Movie.builder()
+                .id(2L)
+                .title(MOVIE.getTitle()) 
+                .build();
+
+        when(repository.findByTitleIgnoreCase(duplicate.getTitle())).thenReturn(Optional.of(MOVIE));
+
+        assertThatThrownBy(() -> service.update(duplicate))
+                .isInstanceOf(AlreadyExistMovieException.class);
+    }
+
+
 
 
 }

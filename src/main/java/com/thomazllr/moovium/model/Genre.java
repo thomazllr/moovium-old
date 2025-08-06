@@ -1,5 +1,8 @@
 package com.thomazllr.moovium.model;
 
+import lombok.Getter;
+
+@Getter
 public enum Genre {
     ACTION,
     ADVENTURE,

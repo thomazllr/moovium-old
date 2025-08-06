@@ -40,7 +40,6 @@ public class MovieController {
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping("/title/{title}")
     public ResponseEntity<MovieGetResponse> getByTitle(@PathVariable String title) {
         var movie = service.findByTitle(title);

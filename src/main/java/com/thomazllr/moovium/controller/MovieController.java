@@ -6,6 +6,7 @@ import com.thomazllr.moovium.request.movie.MoviePutRequest;
 import com.thomazllr.moovium.response.movie.MovieGetResponse;
 import com.thomazllr.moovium.response.movie.MoviePostResponse;
 import com.thomazllr.moovium.service.MovieService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class MovieController {
     private final MovieMapper mapper;
 
     @PostMapping
-    public ResponseEntity<MoviePostResponse> save(@RequestBody MoviePostRequest request) {
+    public ResponseEntity<MoviePostResponse> save(@RequestBody @Valid MoviePostRequest request) {
         var movie = mapper.toMovie(request);
         var savedMovie = service.save(movie);
         var response = mapper.toMoviePostResponse(savedMovie);

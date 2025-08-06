@@ -21,14 +21,13 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        return ResponseEntity.badRequest().body(problem);
+        return ResponseEntity.status(badRequest).body(problem);
     }
 
+    @ExceptionHandler(InvalidTheaterCapacityException.class)
+    public ResponseEntity<Problem> handleInvalidTheaterCapacityException(InvalidTheaterCapacityException exception) {
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Problem> handleNotFoundException(NotFoundException exception) {
-
-        var badRequest = HttpStatus.NOT_FOUND;
+        var badRequest = HttpStatus.BAD_REQUEST;
 
         var problem = Problem.builder()
                 .status(badRequest.value())
@@ -36,6 +35,20 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        return ResponseEntity.badRequest().body(problem);
+        return ResponseEntity.status(badRequest).body(problem);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Problem> handleNotFoundException(NotFoundException exception) {
+
+        var notFound = HttpStatus.NOT_FOUND;
+
+        var problem = Problem.builder()
+                .status(notFound.value())
+                .message(exception.getReason())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(notFound).body(problem);
     }
 }

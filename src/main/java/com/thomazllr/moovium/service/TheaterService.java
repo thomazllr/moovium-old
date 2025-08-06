@@ -1,6 +1,7 @@
 package com.thomazllr.moovium.service;
 
 import com.thomazllr.moovium.exception.AlreadyExistTheaterException;
+import com.thomazllr.moovium.exception.InvalidTheaterCapacityException;
 import com.thomazllr.moovium.exception.NotFoundException;
 import com.thomazllr.moovium.model.Seat;
 import com.thomazllr.moovium.model.Theater;
@@ -20,7 +21,7 @@ public class TheaterService {
     private final SeatRepository seatRepository;
 
     public Theater save(Theater theater) {
-        assertThatTheaterDoesNotExist(theater.getName());
+        validate(theater);
         var theaterSaved = repository.save(theater);
         generateSeats(theaterSaved);
         return theaterSaved;
@@ -38,6 +39,29 @@ public class TheaterService {
         var theater = findById(id);
         repository.delete(theater);
     }
+
+
+    public void validate(Theater theater) {
+        assertThatTheaterDoesNotExist(theater.getName());
+        validateTheaterCapacity(theater);
+    }
+
+    private void validateTheaterCapacity(Theater theater) {
+        int capacity = theater.getCapacity();
+
+        if (capacity < 100) {
+            throw new InvalidTheaterCapacityException(
+                    "Invalid capacity: %d. The minimum allowed is 100 seats.".formatted(capacity)
+            );
+        }
+
+        if (capacity % 10 != 0) {
+            throw new InvalidTheaterCapacityException(
+                    "Invalid capacity: %d. Capacity must be a multiple of 10 (e.g., 100, 110, 120).".formatted(capacity)
+            );
+        }
+    }
+
 
     private void assertThatTheaterDoesNotExist(String name) {
         repository.findByNameIgnoreCase(name)

@@ -5,9 +5,13 @@ import com.thomazllr.moovium.exception.NotFoundException;
 import com.thomazllr.moovium.model.Movie;
 import com.thomazllr.moovium.repository.MovieRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.thomazllr.moovium.repository.specs.MovieSpecs.isFeatured;
+import static com.thomazllr.moovium.repository.specs.MovieSpecs.titleContains;
 
 @Service
 @AllArgsConstructor
@@ -20,12 +24,30 @@ public class MovieService {
         return repository.save(movie);
     }
 
-    public List<Movie> findAll() {
-        return repository.findAll();
+    public List<Movie> findAll(String title, Boolean featured) {
+
+        Specification<Movie> specs = Specification.unrestricted();
+
+        if (title != null) {
+            specs = specs.and(titleContains(title));
+        }
+
+        if (featured != null) {
+            specs = specs.and(isFeatured(featured));
+        }
+
+        return repository.findAll(specs);
+
     }
+
 
     public Movie findById(Long id) {
         return repository.findById(id).orElseThrow(() -> new NotFoundException("Movie not found with id: %s".formatted(id)));
+    }
+
+    public Movie findByTitle(String title) {
+        return repository.findByTitleIgnoreCase(title)
+                .orElseThrow(() -> new NotFoundException("Movie not found with title: %s".formatted(title)));
     }
 
     public void delete(Long id) {

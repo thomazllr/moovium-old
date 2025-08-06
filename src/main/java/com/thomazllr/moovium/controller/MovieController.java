@@ -32,9 +32,19 @@ public class MovieController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MovieGetResponse>> get() {
-        var list = service.findAll();
+    public ResponseEntity<List<MovieGetResponse>> get(@RequestParam(required = false) String title,
+                                                      @RequestParam(required = false, defaultValue = "true") Boolean featured) {
+
+        var list = service.findAll(title, featured);
         var response = mapper.toMovieGetResponseList(list);
+        return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/title/{title}")
+    public ResponseEntity<MovieGetResponse> getByTitle(@PathVariable String title) {
+        var movie = service.findByTitle(title);
+        var response = mapper.toMovieGetResponse(movie);
         return ResponseEntity.ok(response);
     }
 

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class MovieConstants {
 
     public static final Movie MOVIE = Movie.builder()
+            .id(1L)
             .title("The Matrix")
             .synopsis("A hacker discovers the reality is a simulation.")
             .genre(Genre.ACTION)

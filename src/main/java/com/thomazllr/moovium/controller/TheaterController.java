@@ -39,14 +39,14 @@ public class TheaterController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TheaterGetResponse> getById(@PathVariable Long id) {
-        var theater = service.findById(id);
+        var theater = service.findByIdOrThrow(id);
         var response = mapper.toTheaterGetResponse(theater);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}/seats")
     public ResponseEntity<TheaterSeatsGetResponse> getTheaterSeatsById(@PathVariable Long id) {
-        var theater = service.findById(id);
+        var theater = service.findByIdOrThrow(id);
         var response = mapper.toTheaterSeatsGetResponse(theater);
         return ResponseEntity.ok(response);
     }

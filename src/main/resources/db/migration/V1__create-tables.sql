@@ -41,7 +41,7 @@ CREATE TABLE seat
 
 CREATE TABLE session
 (
-    id           BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    id             UUID PRIMARY KEY NOT NULL,
     movie_id     BIGINT REFERENCES movie (id),
     theater_id   BIGINT    NOT NULL REFERENCES theater (id),
     session_time TIMESTAMP NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE session
 CREATE TABLE seat_reservation
 (
     id                     BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    session_id             BIGINT      NOT NULL REFERENCES session (id),
+    session_id             UUID      NOT NULL REFERENCES session (id),
     seat_id                BIGINT      NOT NULL REFERENCES seat (id),
     status                 VARCHAR(10) NOT NULL CHECK (status IN ('AVAILABLE', 'RESERVED', 'SOLD')),
     reservation_expiration TIMESTAMP   NOT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE session_group
     id         BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name       VARCHAR(255) NOT NULL,
     creator_id BIGINT       NOT NULL REFERENCES "users" (id),
-    session_id BIGINT       NOT NULL REFERENCES session (id),
+    session_id UUID       NOT NULL REFERENCES session (id),
     status     VARCHAR(20) CHECK (status IN ('PLANNING', 'CONFIRMED', 'CANCELLED')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

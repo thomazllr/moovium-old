@@ -67,7 +67,7 @@ class MovieServiceTest {
 
         when(repository.findById(id)).thenReturn(Optional.of(MOVIE));
 
-        Movie sut = service.findById(id);
+        Movie sut = service.findByIdOrThrow(id);
 
         assertThat(sut).isEqualTo(MOVIE);
     }
@@ -81,7 +81,7 @@ class MovieServiceTest {
 
         when(repository.findById(id)).thenThrow(new NotFoundException("Movie not found with id: %d".formatted(id)));
 
-        assertThatThrownBy(() -> service.findById(id)).isInstanceOf(NotFoundException.class);
+        assertThatThrownBy(() -> service.findByIdOrThrow(id)).isInstanceOf(NotFoundException.class);
 
 
     }

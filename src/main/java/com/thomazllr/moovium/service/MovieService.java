@@ -4,7 +4,6 @@ import com.thomazllr.moovium.exception.AlreadyExistMovieException;
 import com.thomazllr.moovium.exception.NotFoundException;
 import com.thomazllr.moovium.model.Movie;
 import com.thomazllr.moovium.repository.MovieRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -40,7 +39,7 @@ public class MovieService {
     }
 
 
-    public Movie findById(Long id) {
+    public Movie findByIdOrThrow(Long id) {
         return repository.findById(id).orElseThrow(() -> new NotFoundException("Movie not found with id: %s".formatted(id)));
     }
 
@@ -50,7 +49,7 @@ public class MovieService {
     }
 
     public void delete(Long id) {
-        var movie = findById(id);
+        var movie = findByIdOrThrow(id);
         repository.delete(movie);
     }
 

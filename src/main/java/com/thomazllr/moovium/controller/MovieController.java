@@ -5,6 +5,7 @@ import com.thomazllr.moovium.request.movie.MoviePostRequest;
 import com.thomazllr.moovium.request.movie.MoviePutRequest;
 import com.thomazllr.moovium.response.movie.MovieGetResponse;
 import com.thomazllr.moovium.response.movie.MoviePostResponse;
+import com.thomazllr.moovium.response.movie.MovieSessionsGetResponse;
 import com.thomazllr.moovium.service.MovieService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -49,8 +50,15 @@ public class MovieController {
 
     @GetMapping("/{id}")
     public ResponseEntity<MovieGetResponse> getById(@PathVariable Long id) {
-        var movie = service.findById(id);
+        var movie = service.findByIdOrThrow(id);
         var response = mapper.toMovieGetResponse(movie);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/sessions")
+    public ResponseEntity<MovieSessionsGetResponse> getSessionsByMovieId(@PathVariable Long id) {
+        var movie = service.findByIdOrThrow(id);
+        var response = mapper.toMovieSessionsGetResponse(movie);
         return ResponseEntity.ok(response);
     }
 
@@ -62,7 +70,7 @@ public class MovieController {
 
     @PutMapping
     public ResponseEntity<Void> update(@RequestBody MoviePutRequest request) {
-        var movie = service.findById(request.getId());
+        var movie = service.findByIdOrThrow(request.getId());
         mapper.updateMovieFromPutRequest(request, movie);
         service.update(movie);
         return ResponseEntity.noContent().build();

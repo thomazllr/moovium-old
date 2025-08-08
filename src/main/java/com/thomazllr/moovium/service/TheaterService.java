@@ -31,12 +31,12 @@ public class TheaterService {
         return repository.findAll();
     }
 
-    public Theater findById(Long id) {
+    public Theater findByIdOrThrow(Long id) {
         return repository.findById(id).orElseThrow(() -> new NotFoundException("Theater not found with id: %s".formatted(id)));
     }
 
     public void delete(Long id) {
-        var theater = findById(id);
+        var theater = findByIdOrThrow(id);
         repository.delete(theater);
     }
 

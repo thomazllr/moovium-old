@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -33,6 +34,9 @@ public class Movie {
     private String status;
     private Boolean featured;
     private LocalDate featuredUntil;
+
+    @OneToMany(mappedBy = "movie")
+    private List<Session> sessions;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

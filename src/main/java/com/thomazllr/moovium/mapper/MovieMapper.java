@@ -18,7 +18,7 @@ public interface MovieMapper {
 
     MoviePostResponse toMoviePostResponse(Movie movie);
 
-    Movie toMovie(MoviePostRequest request);
+    Movie toEntity(MoviePostRequest request);
 
     MovieGetResponse toMovieGetResponse(Movie movie);
 

@@ -22,7 +22,7 @@ public class SessionController {
 
     @PostMapping
     public ResponseEntity<SessionPostResponse> save(@RequestBody SessionPostRequest request) {
-        var session = mapper.toSession(request);
+        var session = mapper.toEntity(request);
         var savedSession = service.save(session);
         var response = mapper.toSessionPostResponse(savedSession);
 

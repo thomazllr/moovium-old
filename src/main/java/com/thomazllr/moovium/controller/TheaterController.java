@@ -23,7 +23,7 @@ public class TheaterController {
 
     @PostMapping
     public ResponseEntity<TheaterPostResponse> save(@RequestBody TheaterPostRequest request) {
-        var theater = mapper.toTheater(request);
+        var theater = mapper.toEntity(request);
         var savedTheater = service.save(theater);
         var response = mapper.toTheaterPostResponse(savedTheater);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

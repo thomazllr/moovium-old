@@ -12,6 +12,8 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    public static final String GENERIC_ERROR_MESSAGE = "Internal Error - Please try again later or contact the support team.";
+
     @ExceptionHandler(AlreadyExistEntityException.class)
     public ResponseEntity<Problem> handleAlreadyExistEntityException(AlreadyExistEntityException exception) {
 
@@ -76,4 +78,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(badRequest).body(problem);
 
     }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Problem> handleBusinessException(BusinessException exception) {
+
+        var badRequest = HttpStatus.BAD_REQUEST;
+
+        var problem = Problem.builder()
+                .status(badRequest.value())
+                .message(exception.getReason())
+                .timestamp(LocalDateTime.now())
+                .userMessage(GENERIC_ERROR_MESSAGE)
+                .build();
+
+        return ResponseEntity.badRequest().body(problem);
+    }
+
 }

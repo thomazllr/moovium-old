@@ -14,7 +14,7 @@ public interface TheaterMapper {
 
     TheaterPostResponse toTheaterPostResponse(Theater theater);
 
-    Theater toTheater(TheaterPostRequest request);
+    Theater toEntity(TheaterPostRequest request);
 
     TheaterGetResponse toTheaterGetResponse(Theater theater);
 

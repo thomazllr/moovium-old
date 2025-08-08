@@ -19,6 +19,7 @@ public class Problem {
 
     private int status;
     private String message;
+    private String userMessage;
     private LocalDateTime timestamp;
     private List<Field> fields;
 }

@@ -16,7 +16,7 @@ public interface SessionMapper {
 
     @Mapping(target = "movie", source = "movieId")
     @Mapping(target = "theater", source = "theaterId")
-    Session toSession(SessionPostRequest request);
+    Session toEntity(SessionPostRequest request);
 
     SessionPostResponse toSessionPostResponse(Session session);
 

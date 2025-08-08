@@ -66,7 +66,7 @@ public class TheaterService {
     private void assertThatTheaterDoesNotExist(String name) {
         repository.findByNameIgnoreCase(name)
                 .ifPresent(theater -> {
-                    throw new AlreadyExistTheaterException("A theater with this name: '%s' already exists".formatted(name));
+                    throw new AlreadyExistTheaterException(name);
                 });
     }
 

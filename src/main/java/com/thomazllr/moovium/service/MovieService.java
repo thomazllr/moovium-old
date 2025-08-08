@@ -57,7 +57,7 @@ public class MovieService {
         repository.findByTitleIgnoreCase(movie.getTitle())
                 .filter(found -> !found.getId().equals(movie.getId()))
                 .ifPresent(duplicate -> {
-                    throw new AlreadyExistMovieException("Another movie with title '%s' already exists.".formatted(movie.getTitle()));
+                    throw new AlreadyExistMovieException(movie.getTitle());
                 });
 
         repository.save(movie);
@@ -67,7 +67,7 @@ public class MovieService {
     private void assertThatMovieDoesNotExist(String title) {
         repository.findByTitleIgnoreCase(title)
                 .ifPresent(movie -> {
-                    throw new AlreadyExistMovieException("A movie with this title: '%s' already exists".formatted(title));
+                    throw new AlreadyExistMovieException(title);
                 });
     }
 

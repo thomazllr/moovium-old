@@ -1,16 +1,20 @@
 package com.thomazllr.moovium.controller;
 
 import com.thomazllr.moovium.mapper.SessionMapper;
+import com.thomazllr.moovium.mapper.SessionSeatsMapper;
 import com.thomazllr.moovium.request.session.SessionPostRequest;
 import com.thomazllr.moovium.response.session.SessionGetResponse;
 import com.thomazllr.moovium.response.session.SessionPostResponse;
+import com.thomazllr.moovium.response.session.SessionSeatsStatusGetResponse;
 import com.thomazllr.moovium.service.SessionService;
+import com.thomazllr.moovium.service.query.SessionSeatStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("v1/sessions")
@@ -19,6 +23,9 @@ public class SessionController {
 
     private final SessionService service;
     private final SessionMapper mapper;
+
+    private final SessionSeatStatusService sessionSeatStatusService;
+    private final SessionSeatsMapper sessionSeatsMapper;
 
     @PostMapping
     public ResponseEntity<SessionPostResponse> save(@RequestBody SessionPostRequest request) {
@@ -40,6 +47,14 @@ public class SessionController {
     public ResponseEntity<SessionGetResponse> getById(@PathVariable String id) {
         var session = service.findByIdOrThrow(id);
         var response = mapper.toSessionGetResponse(session);
+        return ResponseEntity.ok(response);
+
+    }
+
+    @GetMapping("/{id}/seats")
+    public ResponseEntity<SessionSeatsStatusGetResponse> getSessionSeatsStatusById(@PathVariable String id) {
+        var sessions = sessionSeatStatusService.findSeatsWithStatusBySessionIdAsTuple(UUID.fromString(id));
+        var response = sessionSeatsMapper.toResponse(UUID.fromString(id), sessions);
         return ResponseEntity.ok(response);
 
     }

@@ -1,6 +1,7 @@
 package com.thomazllr.moovium.service;
 
 import com.thomazllr.moovium.exception.AlreadyExistTheaterException;
+import com.thomazllr.moovium.exception.BusinessException;
 import com.thomazllr.moovium.exception.InvalidTheaterCapacityException;
 import com.thomazllr.moovium.exception.NotFoundException;
 import com.thomazllr.moovium.model.Seat;
@@ -33,6 +34,14 @@ public class TheaterService {
 
     public Theater findByIdOrThrow(Long id) {
         return repository.findById(id).orElseThrow(() -> new NotFoundException("Theater not found with id: %s".formatted(id)));
+    }
+
+    public Theater findByIdOrBadRequest(Long theaterId) {
+        try {
+            return findByIdOrThrow(theaterId);
+        } catch (NotFoundException e) {
+            throw new BusinessException("Invalid Theater Id: '%d'".formatted(theaterId));
+        }
     }
 
     public void delete(Long id) {

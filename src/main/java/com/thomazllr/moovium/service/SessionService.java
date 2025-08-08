@@ -21,8 +21,8 @@ public class SessionService {
     private final TheaterService theaterService;
 
     public Session save(Session session) {
-        var movie = validateAndGetMovie(session.getMovie().getId());
-        var theater = validateAndGetTheater(session.getTheater().getId());
+        var movie = movieService.findByIdOrBadRequest(session.getMovie().getId());
+        var theater = theaterService.findByIdOrBadRequest(session.getTheater().getId());
 
         session.setMovie(movie);
         session.setTheater(theater);
@@ -38,21 +38,7 @@ public class SessionService {
         return repository.findAll();
     }
 
-    private Movie validateAndGetMovie(Long movieId) {
-        try {
-            return movieService.findByIdOrThrow(movieId);
-        } catch (NotFoundException e) {
-            throw new BusinessException("Invalid Movie Id: '%d'".formatted(movieId));
-        }
-    }
 
-    private Theater validateAndGetTheater(Long theaterId) {
-        try {
-            return theaterService.findByIdOrThrow(theaterId);
-        } catch (NotFoundException e) {
-            throw new BusinessException("Invalid Theater Id: '%d'".formatted(theaterId));
-        }
-    }
 
 
 }

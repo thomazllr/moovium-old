@@ -1,6 +1,7 @@
 package com.thomazllr.moovium.service;
 
 import com.thomazllr.moovium.exception.AlreadyExistMovieException;
+import com.thomazllr.moovium.exception.BusinessException;
 import com.thomazllr.moovium.exception.NotFoundException;
 import com.thomazllr.moovium.model.Movie;
 import com.thomazllr.moovium.repository.MovieRepository;
@@ -40,6 +41,14 @@ public class MovieService {
 
     public Movie findByIdOrThrow(Long id) {
         return repository.findById(id).orElseThrow(() -> new NotFoundException("Movie not found with id: %s".formatted(id)));
+    }
+
+    public Movie findByIdOrBadRequest(Long movieId) {
+        try {
+            return findByIdOrThrow(movieId);
+        } catch (NotFoundException e) {
+            throw new BusinessException("Invalid Movie Id: '%d'".formatted(movieId));
+        }
     }
 
     public Movie findByTitle(String title) {

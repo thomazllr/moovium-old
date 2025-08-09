@@ -11,6 +11,7 @@ import com.thomazllr.moovium.service.query.SeatAvailabilityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class SessionController {
     private final SessionSeatsMapper sessionSeatsMapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SessionPostResponse> save(@RequestBody SessionPostRequest request) {
         var session = mapper.toEntity(request);
         var savedSession = service.save(session);

@@ -1,22 +1,23 @@
 package com.thomazllr.moovium.config;
 
+import com.thomazllr.moovium.security.CustomUserDetailsService;
+import com.thomazllr.moovium.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
 
     @Bean
@@ -29,6 +30,9 @@ public class SecurityConfiguration {
                 {
                     auth.requestMatchers(HttpMethod.POST, "v1/users/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "v1/users/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "v1/movies/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "v1/theaters/**").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "v1/sessions").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .build();
@@ -40,12 +44,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
-
-        UserDetails user1 = User.withUsername("user1").password(encoder.encode("123")).roles("USER").build();
-        UserDetails user2 = User.withUsername("admin").password(encoder.encode("123")).roles("ADMIN").build();
-
-        return new InMemoryUserDetailsManager(user1, user2);
+    public UserDetailsService userDetailsService(UserService service) {
+        return new CustomUserDetailsService(service);
     }
 
 }

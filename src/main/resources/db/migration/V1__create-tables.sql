@@ -8,7 +8,7 @@ CREATE TABLE movie
     genre          VARCHAR(100) CHECK (genre IN
                                        ('ACTION', 'ADVENTURE', 'ANIMATION', 'COMEDY', 'CRIME', 'DRAMA', 'FANTASY',
                                         'HORROR', 'MYSTERY', 'ROMANCE', 'SCI_FI', 'THRILLER', 'DOCUMENTARY', 'MUSICAL',
-                                        'WAR', 'WESTERN')),
+                                        'WAR', 'WESTERN', 'ANIMATION')),
     age_rating     VARCHAR(10),
     poster_url     VARCHAR(255),
     status         VARCHAR(20) DEFAULT 'active',

@@ -5,7 +5,7 @@ import jakarta.persistence.Tuple;
 import java.util.List;
 import java.util.UUID;
 
-public interface SessionSeatStatusService {
+public interface SeatAvailabilityService {
 
     List<Tuple> findSeatsWithStatusBySessionIdAsTuple(UUID sessionId);
 

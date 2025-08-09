@@ -12,29 +12,21 @@ import java.util.UUID;
 @Component
 public class SessionSeatsMapper {
 
-    private static final int ID_INDEX = 0;
-    private static final int SEAT_NUMBER_INDEX = 1;
-    private static final int ROW_INDEX = 2;
-    private static final int STATUS_INDEX = 6;
-    private static final int MOVIE_TITLE_INDEX = 7;
-    private static final int SESSION_TIME_INDEX = 8;
-
     public SessionSeatsStatusGetResponse toResponse(UUID sessionId, List<Tuple> tuples) {
-        if (tuples.isEmpty()) {
+        if (tuples == null || tuples.isEmpty()) {
             return SessionSeatsStatusGetResponse.builder()
                     .sessionId(sessionId)
                     .seats(List.of())
                     .build();
         }
 
-        Tuple firstTuple = tuples.get(0);
-        String movieTitle = firstTuple.get(MOVIE_TITLE_INDEX, String.class);
+        Tuple first = tuples.getFirst();
 
-        Timestamp timestamp = firstTuple.get(SESSION_TIME_INDEX, Timestamp.class);
-        LocalDateTime sessionTime = timestamp.toLocalDateTime();
+        String movieTitle = first.get("movie_title", String.class);
+        LocalDateTime sessionTime = toLocalDateTime(first.get("session_time", Timestamp.class));
 
         List<SessionSeatsStatusGetResponse.SeatInfo> seats = tuples.stream()
-                .map(this::tupleToSeatInfo)
+                .map(this::toSeatInfo)
                 .toList();
 
         return SessionSeatsStatusGetResponse.builder()
@@ -45,12 +37,16 @@ public class SessionSeatsMapper {
                 .build();
     }
 
-    private SessionSeatsStatusGetResponse.SeatInfo tupleToSeatInfo(Tuple tuple) {
+    private SessionSeatsStatusGetResponse.SeatInfo toSeatInfo(Tuple tuple) {
         return SessionSeatsStatusGetResponse.SeatInfo.builder()
-                .id(tuple.get(ID_INDEX, Number.class).longValue())
-                .seatNumber(tuple.get(SEAT_NUMBER_INDEX, String.class))
-                .row(tuple.get(ROW_INDEX, String.class))
-                .status(tuple.get(STATUS_INDEX, String.class))
+                .id(tuple.get("seat_id", Number.class).longValue())
+                .seatNumber(tuple.get("seat_number", String.class))
+                .row(tuple.get("seat_row", String.class))
+                .status(tuple.get("seat_status", String.class))
                 .build();
+    }
+
+    private LocalDateTime toLocalDateTime(Timestamp timestamp) {
+        return timestamp == null ? null : timestamp.toLocalDateTime();
     }
 }

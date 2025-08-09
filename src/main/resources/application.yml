@@ -11,6 +11,7 @@ spring:
     password: ${ENV_PASSWORD}
   flyway:
     clean-disabled: false
+    locations: classpath:db/migration,classpath:db/testdata
   threads:
     virtual:
       enabled: true

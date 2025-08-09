@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum Genre {
+    ANIMATION,
     ACTION,
     ADVENTURE,
     COMEDY,

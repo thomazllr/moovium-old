@@ -36,11 +36,11 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{userId}/roles/{roleId}")
+    @PutMapping("/{userId}/roles/{roleId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> associate(@PathVariable Long userId, @PathVariable Long roleId) {
         service.associate(userId, roleId);
-        return ResponseEntity.noContent().build(); // ou 201 se quiser Location
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{userId}/roles/{roleId}")

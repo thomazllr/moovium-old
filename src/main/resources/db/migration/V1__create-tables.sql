@@ -153,3 +153,12 @@ CREATE TABLE message
     sent_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     read_at     TIMESTAMP
 );
+
+CREATE TABLE client
+(
+    id             UUID PRIMARY KEY NOT NULL,
+    client_id      varchar(150) not null,
+    client_secret    varchar(400) not null,
+    redirect_uri     varchar(200) not null,
+    scope      varchar(150)
+);

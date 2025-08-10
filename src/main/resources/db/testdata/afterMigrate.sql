@@ -12,6 +12,7 @@ DELETE FROM seat;
 DELETE FROM theater;
 DELETE FROM movie;
 DELETE FROM users;
+DELETE FROM client;
 
 ALTER SEQUENCE movie_id_seq RESTART WITH 1;
 ALTER SEQUENCE theater_id_seq RESTART WITH 1;
@@ -107,12 +108,16 @@ INSERT INTO session (id, movie_id, theater_id, session_time) VALUES
 (gen_random_uuid(), 6, 4, CURRENT_DATE + INTERVAL '18 hours'),
 (gen_random_uuid(), 6, 2, CURRENT_DATE + INTERVAL '1 day 20 hours 30 minutes');
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 INSERT INTO users (email, password_hash, full_name, nickname, avatar_url, bio, status) VALUES
 ('joao.silva@email.com', '$2a$10$dummyhash1', 'João Silva', 'joao_cine', 'https://avatar.example.com/joao.jpg', 'Fanático por filmes de ação e ficção científica!', 'active'),
 ('maria.santos@email.com', '$2a$10$dummyhash2', 'Maria Santos', 'maria_movies', 'https://avatar.example.com/maria.jpg', 'Apaixonada por cinema desde pequena 🎬', 'active'),
 ('pedro.oliveira@email.com', '$2a$10$dummyhash3', 'Pedro Oliveira', 'pedro_film', 'https://avatar.example.com/pedro.jpg', 'Sempre em busca do próximo blockbuster!', 'active'),
 ('ana.costa@email.com', '$2a$10$dummyhash4', 'Ana Costa', 'ana_cinema', null, 'Cinema é vida! Especialmente dramas e comédias.', 'active'),
 ('carlos.ferreira@email.com', '$2a$10$dummyhash5', 'Carlos Ferreira', 'carlao_movies', 'https://avatar.example.com/carlos.jpg', null, 'active');
+INSERT INTO users (email, password_hash, full_name, nickname, avatar_url, bio, status) VALUES
+    ('thomazstream@email.com', crypt('123123', gen_salt('bf')), 'Guilherme Thomaz', 'thomaz', 'https://avatar.example.com/thomaz_do_stremio.jpg', 'Apaixonado por cinema! Especialmente filmes de ação e ficção científica. Sempre em busca do próximo blockbuster! 🎬', 'active');
 
 INSERT INTO role (name) VALUES
 ('ADMIN'),
@@ -126,6 +131,12 @@ INSERT INTO user_role (user_id, role_id) VALUES
 (3, 2),
 (4, 2),
 (5, 3);
+
+INSERT INTO user_role (user_id, role_id)
+SELECT u.id, r.id
+FROM users u, role r
+WHERE u.nickname = 'thomaz'
+  AND r.name = 'ADMIN';
 
 INSERT INTO seat_reservation (session_id, seat_id, status, reservation_expiration)
 SELECT

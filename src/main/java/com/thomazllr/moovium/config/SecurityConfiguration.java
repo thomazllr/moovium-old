@@ -32,6 +32,7 @@ public class SecurityConfiguration {
                     auth.requestMatchers(HttpMethod.GET, "v1/movies/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "v1/theaters/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "v1/sessions").permitAll();
+                    auth.requestMatchers("/v1/users/nicknames/availability").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> oauth2.successHandler(handler))

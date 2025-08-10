@@ -13,11 +13,13 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
 public class SocialLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
+    public static final String DEFAULT_BIO = "Hello, I'm a new user. I'm still learning how to use this moovium. I hope you enjoy it!";
     private final UserService userService;
 
     @Override
@@ -28,6 +30,17 @@ public class SocialLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         String email = oauthToken.getPrincipal().getAttributes().get("email").toString();
 
         var user = getUserByEmail(email);
+
+        if (Objects.isNull(user)) {
+            user = User.builder()
+                    .bio(DEFAULT_BIO)
+                    .fullName(email)
+                    .nickname(getNickNameByEmail(email))
+                    .email(email)
+                    .passwordHash("123")
+                    .build();
+            user = userService.save(user);
+        }
 
         CustomAuthentication customAuth = new CustomAuthentication(user);
 
@@ -40,4 +53,11 @@ public class SocialLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     public User getUserByEmail(String email) {
         return userService.findByEmailOrThrow(email);
     }
+
+    public String getNickNameByEmail(String email) {
+        return email.substring(0, email.indexOf("@"));
+    }
+
+
+
 }

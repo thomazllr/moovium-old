@@ -1,19 +1,18 @@
 package com.thomazllr.moovium.controller;
 
-import com.thomazllr.moovium.dto.AssociateUserRoleDTO;
-import com.thomazllr.moovium.dto.DissociateUserRoleDTO;
+import com.thomazllr.moovium.exception.BusinessException;
 import com.thomazllr.moovium.mapper.UserMapper;
 import com.thomazllr.moovium.request.user.UserPostRequest;
 import com.thomazllr.moovium.response.user.UserGetResponse;
 import com.thomazllr.moovium.response.user.UserPostResponse;
 import com.thomazllr.moovium.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("v1/users")
@@ -37,17 +36,26 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/associate")
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Void> associate(@RequestBody @Valid AssociateUserRoleDTO dto) {
-        service.associate(dto.userId(), dto.roleId());
+    @PostMapping("/{userId}/roles/{roleId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> associate(@PathVariable Long userId, @PathVariable Long roleId) {
+        service.associate(userId, roleId);
+        return ResponseEntity.noContent().build(); // ou 201 se quiser Location
+    }
+
+    @DeleteMapping("/{userId}/roles/{roleId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> dissociate(@PathVariable Long userId, @PathVariable Long roleId) {
+        service.dissociate(userId, roleId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/dissociate")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> associate(@RequestBody @Valid DissociateUserRoleDTO dto) {
-        service.dissociate(dto.userId(), dto.roleId());
-        return ResponseEntity.noContent().build();
+    @GetMapping("/nicknames/availability")
+    public ResponseEntity<Map<String, Object>> checkNickname(@RequestParam String nickname) {
+            boolean available = service.isNicknameAvailable(nickname);
+            return ResponseEntity.ok(Map.of(
+                    "nickname", nickname,
+                    "available", available
+            ));
     }
 }

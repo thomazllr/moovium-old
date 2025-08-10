@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -13,4 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllWithRoles();
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.nickname = :nickname")
-    User findByNicknameWithRoles(@Param("nickname") String nickname);}
+    User findByNicknameWithRoles(@Param("nickname") String nickname);
+
+    Optional<User> findByEmail(String email);
+}

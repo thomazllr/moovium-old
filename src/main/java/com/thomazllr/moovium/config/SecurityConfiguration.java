@@ -1,7 +1,6 @@
 package com.thomazllr.moovium.config;
 
-import com.thomazllr.moovium.security.CustomUserDetailsService;
-import com.thomazllr.moovium.service.UserService;
+import com.thomazllr.moovium.security.SocialLoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,7 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,7 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, SocialLoginSuccessHandler handler) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(Customizer.withDefaults())
@@ -35,6 +34,7 @@ public class SecurityConfiguration {
                     auth.requestMatchers(HttpMethod.GET, "v1/sessions").permitAll();
                     auth.anyRequest().authenticated();
                 })
+                .oauth2Login(oauth2 -> oauth2.successHandler(handler))
                 .build();
     }
 
@@ -44,8 +44,9 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(UserService service) {
-        return new CustomUserDetailsService(service);
+    public GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        return new GrantedAuthorityDefaults("");
     }
+
 
 }

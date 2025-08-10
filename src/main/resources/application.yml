@@ -17,3 +17,10 @@ spring:
       enabled: true
   jpa:
     show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${ID_CLIENT}
+            client-secret: ${CLIENT_SECRET}

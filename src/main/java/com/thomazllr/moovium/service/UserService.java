@@ -52,6 +52,10 @@ public class UserService {
         }
     }
 
+    public User findByEmailOrThrow(String email) {
+        return repository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found with email: %s".formatted(email)));
+    }
+
     public void associate(Long userId, Long roleId) {
         var user = findByIdOrBadRequest(userId);
         var role = roleService.findByIdOrBadRequest(roleId);

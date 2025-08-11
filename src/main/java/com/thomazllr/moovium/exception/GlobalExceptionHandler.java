@@ -1,6 +1,7 @@
 package com.thomazllr.moovium.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.internal.util.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,12 +19,15 @@ import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     public static final String GENERIC_ERROR_MESSAGE = "Internal Error - Please try again later or contact the support team.";
 
     @ExceptionHandler(AlreadyExistEntityException.class)
     public ResponseEntity<Problem> handleAlreadyExistEntityException(AlreadyExistEntityException exception) {
+
+        log.error(exception.getMessage());
 
         var conflict = HttpStatus.CONFLICT;
 
@@ -39,6 +43,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(InvalidTheaterCapacityException.class)
     public ResponseEntity<Problem> handleInvalidTheaterCapacityException(InvalidTheaterCapacityException exception) {
 
+        log.error(exception.getMessage());
+
         var badRequest = HttpStatus.BAD_REQUEST;
 
         var problem = Problem.builder()
@@ -52,6 +58,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Problem> handleNotFoundException(NotFoundException exception) {
+
+        log.error(exception.getMessage());
 
         var notFound = HttpStatus.NOT_FOUND;
 
@@ -70,6 +78,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers,
             HttpStatusCode status,
             WebRequest request) {
+
+        log.error(ex.getMessage());
+
 
         var fields = ex.getBindingResult().getFieldErrors().stream()
                 .map(err -> Problem.Field.builder()
@@ -92,6 +103,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Problem> handleBusinessException(BusinessException exception) {
 
+        log.error(exception.getMessage());
+
+
         var badRequest = HttpStatus.BAD_REQUEST;
 
         var problem = Problem.builder()
@@ -106,6 +120,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<Problem> handleAuthorizationDeniedException(AuthorizationDeniedException exception) {
+
+        log.error(exception.getMessage());
+
         var forbidden = HttpStatus.FORBIDDEN;
         var problem = Problem.builder()
                 .status(forbidden.value())
@@ -118,6 +135,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException exception, HttpHeaders
             headers, HttpStatusCode status, WebRequest request) {
+
+        log.error(exception.getMessage());
 
         var badRequest = HttpStatus.BAD_REQUEST;
         Throwable rootCause = ExceptionUtils.getRootCause(exception);
@@ -139,6 +158,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders
             headers, HttpStatusCode status, WebRequest request) {
+
+        log.error(ex.getMessage());
 
         var path = ex.getPath().stream()
                 .map(ref -> ref.getFieldName()).collect(Collectors.joining("."));

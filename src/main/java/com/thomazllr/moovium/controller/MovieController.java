@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("v1/movies")
 @Tag(name = "Movies", description = "Operations about movies")
+@Slf4j
 public class MovieController {
 
     private final MovieService service;
@@ -38,6 +40,9 @@ public class MovieController {
     @ApiResponse(responseCode = "400", description = "Invalid input data")
     @ApiResponse(responseCode = "409", description = "Movie already exists")
     public ResponseEntity<MoviePostResponse> save(@RequestBody @Valid MoviePostRequest request) {
+
+        log.info("Saving movie: {}", request.getTitle());
+
         var movie = mapper.toEntity(request);
         var savedMovie = service.save(movie);
         var response = mapper.toMoviePostResponse(savedMovie);
@@ -108,6 +113,7 @@ public class MovieController {
     @ApiResponse(responseCode = "404", description = "Movie not found")
     @ApiResponse(responseCode = "403", description = "Access denied - Admin role required")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
+        log.info("Deleting movie with ID: {}", id);
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -121,6 +127,9 @@ public class MovieController {
     @ApiResponse(responseCode = "400", description = "Invalid input data")
     @ApiResponse(responseCode = "404", description = "Movie not found")
     public ResponseEntity<Void> update(@RequestBody @Valid MoviePutRequest request) {
+
+        log.info("Updating movie with ID: {}", request.getId());
+
         var movie = service.findByIdOrThrow(request.getId());
         mapper.updateMovieFromPutRequest(request, movie);
         service.update(movie);

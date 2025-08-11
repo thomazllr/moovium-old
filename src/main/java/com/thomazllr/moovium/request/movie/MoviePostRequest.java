@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Schema(name = "Movie")
 @Getter
 @Setter
 @Builder

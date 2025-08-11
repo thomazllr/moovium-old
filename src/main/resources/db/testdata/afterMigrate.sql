@@ -12,7 +12,6 @@ DELETE FROM seat;
 DELETE FROM theater;
 DELETE FROM movie;
 DELETE FROM users;
-DELETE FROM client;
 
 ALTER SEQUENCE movie_id_seq RESTART WITH 1;
 ALTER SEQUENCE theater_id_seq RESTART WITH 1;

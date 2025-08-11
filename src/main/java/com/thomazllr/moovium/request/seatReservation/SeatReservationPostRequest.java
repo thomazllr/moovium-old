@@ -13,7 +13,7 @@ public class SeatReservationPostRequest {
 
     @NotNull(message = "Session ID is required.")
     private UUID sessionId;
-    @NotBlank(message = "Seat ID is required.")
+    @NotNull(message = "Seat ID is required.")
     private Long seatId;
 
 }

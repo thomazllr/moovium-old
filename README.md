@@ -1,5 +1,7 @@
 # 🎬 Moovium
 
+[PROJETO DESCONTINUADO] 
+
 > Plataforma de gerenciamento e exibição de sessões de cinema, desenvolvida com **Java 21** e **Spring Boot**.
 
 
